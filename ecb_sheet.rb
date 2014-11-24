@@ -7,7 +7,8 @@ begin
   option_parser = ECB_OptionParser.new(File.basename($PROGRAM_NAME))
   option_parser.parse(ARGV)
 
-  currency_rates  = Currency_rates.new(:period_90d)
+  period = option_parser.options['full_history'] ? :period_full : :period_90d
+  currency_rates  = Currency_rates.new(period)
   option_parser.post_validate(currency_rates.get_available_dates, currency_rates.get_available_currencies)
 
   currency_date   = option_parser.options['date']

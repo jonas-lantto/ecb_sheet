@@ -23,10 +23,26 @@ class EcbOptionparserTest < Test::Unit::TestCase
       parser.parse(%w(-s EUR -t SEK))
       parser.post_validate(available_dates, available_currencies)
     }
-    assert_equal(3, parser.options.size)
+    assert_equal(4, parser.options.size)
     assert_equal('EUR', parser.options['src_currency'])
     assert_equal('SEK', parser.options['target_currency'])
     assert_equal('2014-11-25', parser.options['date'])
+    assert_equal(false, parser.options['full_history'])
+  end
+
+  def test_valid_options
+    available_dates = %w(2014-11-25 2014-11-24 2014-11-21)
+    available_currencies = %w(SEK EUR GBP)
+    parser = ECB_OptionParser.new('FiLeNaMe.rb')
+    assert_nothing_raised {
+      parser.parse(%w(-s SEK -t GBP -f -d 2014-11-24))
+      parser.post_validate(available_dates, available_currencies)
+    }
+    assert_equal(4, parser.options.size)
+    assert_equal('SEK', parser.options['src_currency'])
+    assert_equal('GBP', parser.options['target_currency'])
+    assert_equal('2014-11-24', parser.options['date'])
+    assert_equal(true, parser.options['full_history'])
   end
 
   def test_invalid_date

@@ -6,6 +6,7 @@ class ECB_OptionParser
 
   def initialize(filename)
     @options = {}
+    options['full_history'] = false
 
     @option_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{filename} [options]"
@@ -20,6 +21,10 @@ class ECB_OptionParser
 
       opts.on('-d', '--date [DATE]', 'Currency date, defaults to latest if not present') do |f|
         options['date'] = f
+      end
+
+      opts.on('-f', '--full_history', 'Includes all data from ECB. Defaults to 90 days') do |f|
+        options['full_history'] = f
       end
 
       opts.on_tail('-h', '--help', 'Show this message') do

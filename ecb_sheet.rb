@@ -2,9 +2,10 @@ require 'rubygems'
 require 'rexml/document'
 require 'open-uri'
 require 'write_xlsx'
+require_relative 'ecb_optionparser'
 
 url = 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml'
-base_currency = 'SEK'
+
 
 def get_currency_rates(doc)
   currency_rates = Hash.new
@@ -30,7 +31,7 @@ def create_data(base_currency, currency_rates)
 end
 
 def create_xslx(base_currency, currency_date, data)
-  workbook = WriteXLSX.new("fxrates #{currency_date}.xlsx")
+  workbook = WriteXLSX.new("fxrates #{base_currency} #{currency_date}.xlsx")
   worksheet = workbook.add_worksheet('FxRates(ECB)')
   currency_format = workbook.add_format(:num_format => "0.0000 \"#{base_currency}\"")
 
@@ -51,9 +52,22 @@ def create_xslx(base_currency, currency_date, data)
   workbook.close
 end
 
+begin
+  option_parser = ECB_OptionParser.new(ARGV[0])
+  option_parser.parse(ARGV)
 
-doc            = REXML::Document.new open(url)
-currency_date  = get_currency_date(doc)
-currency_rates = get_currency_rates(doc)
-data           = create_data(base_currency, currency_rates)
-create_xslx(base_currency, currency_date, data)
+  doc            = REXML::Document.new open(url)
+  currency_date  = get_currency_date(doc)
+  currency_rates = get_currency_rates(doc)
+  base_currency  = option_parser.options['base_currency']
+  raise OptionParser::ParseError, "#{base_currency} is not a valid currency" if currency_rates[base_currency].nil?
+
+  data           = create_data(base_currency, currency_rates)
+  create_xslx(base_currency, currency_date, data)
+
+rescue
+  puts $!.to_s
+  puts option_parser.option_parser
+  exit
+end
+

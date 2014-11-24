@@ -18,6 +18,10 @@ class ECB_OptionParser
         options['target_currency'] = f
       end
 
+      opts.on('-d', '--date [DATE]', 'Currency date, defaults to latest if not present') do |f|
+        options['date'] = f
+      end
+
       opts.on_tail('-h', '--help', 'Show this message') do
         puts opts
         exit
@@ -30,6 +34,15 @@ class ECB_OptionParser
     option_parser.parse!(argv)
     raise OptionParser::ParseError, '--src_currency is required' if options['src_currency'].nil?
     raise OptionParser::ParseError, '--target_currency is required' if options['target_currency'].nil?
+  end
+
+  def post_validate(available_dates, available_currencies)
+    %w{src_currency target_currency}.each do |cur|
+      raise OptionParser::ParseError, "#{options[cur]} is not a valid currency in --#{cur}" unless available_currencies.include?(options[cur])
+    end
+
+    options['date'] = available_dates.max if options['date'].nil?
+    raise OptionParser::ParseError, "Given date #{options['date']} has no data" unless available_dates.include?(options['date'])
   end
 
 end

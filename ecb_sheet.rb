@@ -4,15 +4,68 @@ require 'open-uri'
 require 'write_xlsx'
 require_relative 'ecb_optionparser'
 
-def create_data_many2one(base_currency, currency_rates)
-  data = []
-  base_rate = currency_rates[base_currency]
-  currency_rates.each { |currency, rate|
-    converted_rate = base_rate / rate
-    data << [currency, converted_rate]
-  }
-  data
+
+class Currency_rates
+
+  def initialize(period = :period_none)
+    url = case period
+            when :period_latest then 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml'
+            when :period_90d    then 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
+            when :period_none   then nil
+            else raise RuntimeError('Unknown period in Currency_rates')
+          end
+
+    @currency_rates = Hash.new
+    unless url.nil?
+      doc = REXML::Document.new open(url)
+      fetch_currency_rates(doc)
+    end
+  end
+
+  def fetch_currency_rates(xml_doc)
+    xml_doc.elements.each('gesmes:Envelope/Cube/Cube') do |element|
+      date_rates = @currency_rates[element.attributes['time']] = Hash.new
+      date_rates['EUR'] = 1
+      element.elements.each('Cube') do |element2|
+        date_rates[element2.attributes['currency']] = element2.attributes['rate'].to_f
+      end
+    end
+  end
+
+  def table_data_currency2rate(date, target_currency)
+    data = []
+    base_rate = @currency_rates[date][target_currency]
+    @currency_rates[date].each { |currency, rate|
+      converted_rate = base_rate / rate
+      data << [currency, converted_rate]
+    }
+    data
+  end
+
+  def table_data_date2rate(src_currency, target_currency)
+    data = []
+    @currency_rates.each { |date, rates|
+      converted_rate = rates[target_currency] / rates[src_currency]
+      data << [date, converted_rate]
+    }
+    data
+  end
+
+  def get_available_currencies
+    res = Array.new
+    @currency_rates.values.each do |rates|
+      res |= rates.keys
+    end
+    res
+  end
+
+  def get_available_dates
+    @currency_rates.keys
+  end
+
 end
+
+
 
 def create_xslx(workbook, base_currency, currency_date, data)
   worksheet = workbook.add_worksheet("FxRates(ECB) #{base_currency} #{currency_date}")
@@ -33,14 +86,7 @@ def create_xslx(workbook, base_currency, currency_date, data)
   worksheet.set_column(1, 1, 13)
 end
 
-def create_data_one2one(src_currency, target_currency, currency_rates)
-  data = []
-  currency_rates.each { |date, rates|
-    converted_rate = rates[target_currency] / rates[src_currency]
-    data << [date, converted_rate]
-  }
-  data
-end
+
 
 def create_xslx_one2one(workbook, src_currency, target_currency, data)
   worksheet = workbook.add_worksheet("FxRates(ECB) #{src_currency}#{target_currency}")
@@ -60,57 +106,23 @@ def create_xslx_one2one(workbook, src_currency, target_currency, data)
   worksheet.set_column(1, 1, 13)
 end
 
-
-
-def fetch_currency_rates()
-#  url     = 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml'
-  url_90d = 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
-  doc = REXML::Document.new open(url_90d)
-  currency_rates = Hash.new
-
-  doc.elements.each('gesmes:Envelope/Cube/Cube') do |element|
-    date_rates = currency_rates[element.attributes['time']] = Hash.new
-    date_rates['EUR'] = 1
-    element.elements.each('Cube') do |element2|
-      date_rates[element2.attributes['currency']] = element2.attributes['rate'].to_f
-    end
-  end
-  currency_rates
-end
-
-def fetch_currency(currency, available_currencies)
-  raise OptionParser::ParseError, "#{currency} is not a valid currency" if not available_currencies.include?(currency)
-  currency
-end
-
-def get_available_currencies(currency_rates)
-  res = Array.new
-  currency_rates.each do |date, rates|
-    res |= rates.keys
-  end
-  res
-end
-
-def get_available_dates(currency_rates)
-  currency_rates.keys
-end
-
 begin
   option_parser = ECB_OptionParser.new(ARGV[0])
   option_parser.parse(ARGV)
 
-  currency_rates  = fetch_currency_rates
-  currency_date   = get_available_dates(currency_rates).max
-  available_currencies = get_available_currencies(currency_rates)
-  src_currency    = fetch_currency(option_parser.options['src_currency'], available_currencies)
-  target_currency = fetch_currency(option_parser.options['target_currency'], available_currencies)
+  currency_rates  = Currency_rates.new(:period_90d)
+  option_parser.post_validate(currency_rates.get_available_dates, currency_rates.get_available_currencies)
+
+  currency_date   = option_parser.options['date']
+  src_currency    = option_parser.options['src_currency']
+  target_currency = option_parser.options['target_currency']
 
   workbook = WriteXLSX.new("fxrates #{src_currency}#{target_currency} #{currency_date}.xlsx")
 
-  data = create_data_many2one(target_currency, currency_rates[currency_date])
+  data = currency_rates.table_data_currency2rate(currency_rates.get_available_dates.max, target_currency)
   create_xslx(workbook, target_currency, currency_date, data)
 
-  data = create_data_one2one(src_currency, target_currency, currency_rates)
+  data = currency_rates.table_data_date2rate(src_currency, target_currency)
   create_xslx_one2one(workbook, src_currency, target_currency, data)
 
   workbook.close

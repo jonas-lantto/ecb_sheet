@@ -78,9 +78,21 @@ def fetch_currency_rates()
   currency_rates
 end
 
-def fetch_currency(currency, currency_rates)
-  raise OptionParser::ParseError, "#{currency} is not a valid currency" if currency_rates[currency_rates.keys.max][currency].nil?
+def fetch_currency(currency, available_currencies)
+  raise OptionParser::ParseError, "#{currency} is not a valid currency" if not available_currencies.include?(currency)
   currency
+end
+
+def get_available_currencies(currency_rates)
+  res = Array.new
+  currency_rates.each do |date, rates|
+    res |= rates.keys
+  end
+  res
+end
+
+def get_available_dates(currency_rates)
+  currency_rates.keys
 end
 
 begin
@@ -88,9 +100,10 @@ begin
   option_parser.parse(ARGV)
 
   currency_rates  = fetch_currency_rates
-  currency_date   = currency_rates.keys.max
-  src_currency    = fetch_currency(option_parser.options['src_currency'], currency_rates)
-  target_currency = fetch_currency(option_parser.options['target_currency'], currency_rates)
+  currency_date   = get_available_dates(currency_rates).max
+  available_currencies = get_available_currencies(currency_rates)
+  src_currency    = fetch_currency(option_parser.options['src_currency'], available_currencies)
+  target_currency = fetch_currency(option_parser.options['target_currency'], available_currencies)
 
   workbook = WriteXLSX.new("fxrates #{src_currency}#{target_currency} #{currency_date}.xlsx")
 

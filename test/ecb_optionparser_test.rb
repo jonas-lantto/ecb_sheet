@@ -1,5 +1,5 @@
 require_relative 'helper'
-require_relative '../lib/ecb_optionparser'
+require_relative '../lib/ecb_option_parser'
 
 class EcbOptionparserTest < Test::Unit::TestCase
 

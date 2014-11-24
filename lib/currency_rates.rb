@@ -7,6 +7,7 @@ class Currency_rates
     url = case period
             when :period_latest then 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml'
             when :period_90d    then 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
+            when :period_full   then 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.xml'
             when :period_none   then nil
             else raise 'Unknown period in Currency_rates'
           end

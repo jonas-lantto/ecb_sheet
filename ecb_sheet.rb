@@ -1,10 +1,10 @@
 require 'rubygems'
-require_relative 'lib/ecb_optionparser'
+require_relative 'lib/ecb_option_parser'
 require_relative 'lib/currency_rates'
 require_relative 'lib/excel_creator'
 
 begin
-  option_parser = ECB_OptionParser.new(ARGV[0])
+  option_parser = ECB_OptionParser.new(File.basename($PROGRAM_NAME))
   option_parser.parse(ARGV)
 
   currency_rates  = Currency_rates.new(:period_90d)

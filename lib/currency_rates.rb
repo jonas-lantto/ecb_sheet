@@ -8,17 +8,17 @@ class Currency_rates
             when :period_latest then 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml'
             when :period_90d    then 'http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist-90d.xml'
             when :period_none   then nil
-            else raise RuntimeError('Unknown period in Currency_rates')
+            else raise 'Unknown period in Currency_rates'
           end
 
     @currency_rates = Hash.new
     unless url.nil?
       doc = REXML::Document.new open(url)
-      fetch_currency_rates(doc)
+      load_currency_rates(doc)
     end
   end
 
-  def fetch_currency_rates(xml_doc)
+  def load_currency_rates(xml_doc)
     xml_doc.elements.each('gesmes:Envelope/Cube/Cube') do |element|
       date_rates = @currency_rates[element.attributes['time']] = Hash.new
       date_rates['EUR'] = 1
@@ -31,6 +31,7 @@ class Currency_rates
   def table_data_currency2rate(date, target_currency)
     data = []
     base_rate = @currency_rates[date][target_currency]
+    raise "Currency #{target_currency} not available on date #{date}" if base_rate.nil?
     @currency_rates[date].each { |currency, rate|
       converted_rate = base_rate / rate
       data << [currency, converted_rate]
@@ -41,7 +42,8 @@ class Currency_rates
   def table_data_date2rate(src_currency, target_currency)
     data = []
     @currency_rates.each { |date, rates|
-      converted_rate = rates[target_currency] / rates[src_currency]
+      converted_rate = rates[target_currency].nil? || rates[src_currency].nil? ? 'N/A' : rates[target_currency] / rates[src_currency]
+
       data << [date, converted_rate]
     }
     data

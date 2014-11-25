@@ -1,5 +1,5 @@
 require 'test/unit'
-require_relative '../lib/currency_rates'
+require 'ecb_sheet/currency_rates'
 
 class Currency_rateTest < Test::Unit::TestCase
 

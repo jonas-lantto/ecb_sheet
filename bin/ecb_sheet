@@ -1,7 +1,6 @@
-require 'rubygems'
-require_relative 'lib/ecb_option_parser'
-require_relative 'lib/currency_rates'
-require_relative 'lib/excel_creator'
+#!/usr/bin/env ruby
+
+require_relative '../lib/ecb_sheet'
 
 begin
   option_parser = ECB_OptionParser.new(File.basename($PROGRAM_NAME))

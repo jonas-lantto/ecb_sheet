@@ -2,7 +2,7 @@
 
 require 'rake/testtask'
 
-task :default => [:exe_only]
+task :default => [:test]
 
 desc 'Run all tests'
 Rake::TestTask.new('test') { |t|

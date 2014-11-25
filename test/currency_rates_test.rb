@@ -18,7 +18,7 @@ class Currency_rateTest < Test::Unit::TestCase
 
   def test_load
     cr = Currency_rates.new(:period_none)
-    doc = REXML::Document.new File.new('data/ecb-test.xml')
+    doc = REXML::Document.new File.new('test/data/ecb-test.xml')
     cr.load_currency_rates(doc)
     assert_equal(%w(EUR USD GBP SEK HKD).sort, cr.get_available_currencies.sort)
     assert_equal(%w(2014-11-21 2014-11-20 2014-11-19).sort, cr.get_available_dates.sort)
@@ -26,7 +26,7 @@ class Currency_rateTest < Test::Unit::TestCase
 
   def test_all_data_available
     cr = Currency_rates.new(:period_none)
-    doc = REXML::Document.new File.new('data/ecb-test.xml')
+    doc = REXML::Document.new File.new('test/data/ecb-test.xml')
     cr.load_currency_rates(doc)
 
     assert_equal([['EUR', 0.7921],
@@ -41,7 +41,7 @@ class Currency_rateTest < Test::Unit::TestCase
 
   def test_missing_currency
     cr = Currency_rates.new(:period_none)
-    doc = REXML::Document.new File.new('data/ecb-test.xml')
+    doc = REXML::Document.new File.new('test/data/ecb-test.xml')
     cr.load_currency_rates(doc)
 
     assert_raise(RuntimeError, 'SEK not available on selected date') {

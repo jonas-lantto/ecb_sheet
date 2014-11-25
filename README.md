@@ -1,4 +1,6 @@
 # ecb_sheet
+[![Build Status](https://travis-ci.org/jonas-lantto/ecb_sheet.png)](https://travis-ci.org/jonas-lantto/ecb_sheet)
+
 Simple utility to generate an excel sheet with currency rates from European Central Bank(ECB)
 
 ## Description

@@ -1,4 +1,4 @@
-require_relative 'helper'
+require 'test/unit'
 require 'ecb_sheet/ecb_option_parser'
 
 class EcbOptionparserTest < Test::Unit::TestCase

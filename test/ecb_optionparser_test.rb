@@ -46,6 +46,14 @@ class EcbOptionparserTest < MiniTest::Unit::TestCase
   def test_invalid_date
     available_dates = %w(2014-11-25 2014-11-24 2014-11-21)
     available_currencies = %w(SEK EUR GBP)
+
+    parser = ECB_OptionParser.new('FiLeNaMe.rb')
+    e = assert_raises(OptionParser::InvalidArgument) {
+      parser.parse(%w(-s EUR -t SEK -d 2014-13-23))
+      parser.post_validate(available_dates, available_currencies)
+    }
+    assert_equal('invalid argument: -d 2014-13-23', e.to_s)
+
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
     e = assert_raises(OptionParser::ParseError) {
       parser.parse(%w(-s EUR -t SEK -d 2014-11-23))

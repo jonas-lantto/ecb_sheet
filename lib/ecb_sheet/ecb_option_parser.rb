@@ -1,4 +1,6 @@
 require 'optparse'
+require 'optparse/time'
+
 
 class ECB_OptionParser
   attr_reader :options
@@ -19,8 +21,8 @@ class ECB_OptionParser
         options['target_currency'] = f
       end
 
-      opts.on('-d', '--date [DATE]', 'Currency date, defaults to latest if not present') do |f|
-        options['date'] = f
+      opts.on('-d', '--date [YYYY-MM-DD]', Time, 'Currency date, defaults to most recent if not present') do |f|
+        options['date'] = f.strftime('%Y-%m-%d')
       end
 
       opts.on('-f', '--full_history', 'Includes all data from ECB. Defaults to 90 days') do |f|

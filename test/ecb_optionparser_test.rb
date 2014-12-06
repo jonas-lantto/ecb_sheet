@@ -19,7 +19,7 @@ class EcbOptionparserTest < MiniTest::Unit::TestCase
     available_dates = %w(2014-11-25 2014-11-24 2014-11-21)
     available_currencies = %w(SEK EUR GBP)
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
-    parser.parse(%w(-s EUR -t SEK))
+    parser.parse(%w(EUR SEK))
     parser.post_validate(available_dates, available_currencies)
 
     assert_equal(4, parser.options.size)
@@ -33,7 +33,7 @@ class EcbOptionparserTest < MiniTest::Unit::TestCase
     available_dates = %w(2014-11-25 2014-11-24 2014-11-21)
     available_currencies = %w(SEK EUR GBP)
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
-    parser.parse(%w(-s SEK -t GBP -f -d 2014-11-24))
+    parser.parse(%w(SEK GBP -f -d 2014-11-24))
     parser.post_validate(available_dates, available_currencies)
 
     assert_equal(4, parser.options.size)
@@ -49,14 +49,14 @@ class EcbOptionparserTest < MiniTest::Unit::TestCase
 
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
     e = assert_raises(OptionParser::InvalidArgument) {
-      parser.parse(%w(-s EUR -t SEK -d 2014-13-23))
+      parser.parse(%w(EUR SEK -d 2014-13-23))
       parser.post_validate(available_dates, available_currencies)
     }
     assert_equal('invalid argument: -d 2014-13-23', e.to_s)
 
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
     e = assert_raises(OptionParser::ParseError) {
-      parser.parse(%w(-s EUR -t SEK -d 2014-11-23))
+      parser.parse(%w(EUR SEK -d 2014-11-23))
       parser.post_validate(available_dates, available_currencies)
     }
     assert_equal('parse error: Given date 2014-11-23 has no data', e.to_s)
@@ -67,17 +67,21 @@ class EcbOptionparserTest < MiniTest::Unit::TestCase
     available_currencies = %w(SEK EUR GBP)
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
     e = assert_raises(OptionParser::ParseError) {
-      parser.parse(%w(-s EUR -t XXX -d 2014-11-24))
+      parser.parse(%w(EUR XXX -d 2014-11-24))
       parser.post_validate(available_dates, available_currencies)
     }
     assert_equal('parse error: XXX is not a valid currency in --target_currency', e.to_s)
   end
 
 
-  def test_missing_option
+  def test_wrong_argv
      parser = ECB_OptionParser.new('FiLeNaMe.rb')
-     e = assert_raises(OptionParser::ParseError)  { parser.parse(%w(-t SEK)) }
-     assert_equal('parse error: --src_currency is required', e.to_s)
+     e = assert_raises(OptionParser::ParseError)  { parser.parse(%w(SEK)) }
+     assert_equal('parse error: <target currency> is required', e.to_s)
+
+     parser = ECB_OptionParser.new('FiLeNaMe.rb')
+     e = assert_raises(OptionParser::ParseError)  { parser.parse(%w(SEK EUR GBP)) }
+     assert_equal('parse error: Too many arguments', e.to_s)
   end
 
 end

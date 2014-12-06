@@ -11,17 +11,9 @@ class ECB_OptionParser
     options['full_history'] = false
 
     @option_parser = OptionParser.new do |opts|
-      opts.banner = "Usage: #{filename} [options]"
+      opts.banner = "Usage: #{filename} [options] <src currency> <target currency>"
 
-      opts.on('-s', '--src_currency CURRENCY', 'Currency to convert from') do |f|
-        options['src_currency'] = f
-      end
-
-      opts.on('-t', '--target_currency CURRENCY', 'Currency to convert to') do |f|
-        options['target_currency'] = f
-      end
-
-      opts.on('-d', '--date [YYYY-MM-DD]', Time, 'Currency date, defaults to most recent if not present') do |f|
+      opts.on('-d', '--date YYYY-MM-DD', Time, 'Currency date, defaults to most recent if not present') do |f|
         options['date'] = f.strftime('%Y-%m-%d')
       end
 
@@ -39,8 +31,10 @@ class ECB_OptionParser
 
   def parse(argv)
     option_parser.parse!(argv)
-    raise OptionParser::ParseError, '--src_currency is required' if options['src_currency'].nil?
-    raise OptionParser::ParseError, '--target_currency is required' if options['target_currency'].nil?
+    options['src_currency'], options['target_currency'] = argv
+    raise OptionParser::ParseError, 'Too many arguments' if argv.count > 2
+    raise OptionParser::ParseError, '<src currency> is required' if options['src_currency'].nil?
+    raise OptionParser::ParseError, '<target currency> is required' if options['target_currency'].nil?
   end
 
   def post_validate(available_dates, available_currencies)

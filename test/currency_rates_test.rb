@@ -1,7 +1,7 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'ecb_sheet/currency_rates'
 
-class Currency_rateTest < Test::Unit::TestCase
+class Currency_rateTest < MiniTest::Unit::TestCase
 
   # Called before every test method runs. Can be used
   # to set up fixture information.
@@ -44,7 +44,7 @@ class Currency_rateTest < Test::Unit::TestCase
     doc = REXML::Document.new File.new('test/data/ecb-test.xml')
     cr.load_currency_rates(doc)
 
-    assert_raise(RuntimeError, 'SEK not available on selected date') {
+    assert_raises(RuntimeError, 'SEK not available on selected date') {
       assert_equal([['EUR', 0.7921],
                     ['USD', 0.6376589921107713],
                     ['GBP', 1.0],

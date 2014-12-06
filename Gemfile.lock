@@ -2,18 +2,16 @@ GEM
   remote: https://rubygems.org/
   specs:
     docile (1.1.5)
+    minitest (5.4.3)
     multi_json (1.10.1)
-    power_assert (0.2.2)
-    rake (10.3.2)
+    rake (10.4.2)
     rubyzip (1.1.6)
     simplecov (0.9.1)
       docile (~> 1.1.0)
       multi_json (~> 1.0)
       simplecov-html (~> 0.8.0)
     simplecov-html (0.8.0)
-    test-unit (3.0.7)
-      power_assert
-    write_xlsx (0.77.2)
+    write_xlsx (0.81.0)
       rubyzip (>= 1.0.0)
       zip-zip
     zip-zip (0.3)
@@ -23,7 +21,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  minitest (~> 5.4)
   rake
   simplecov
-  test-unit
   write_xlsx (~> 0.77)

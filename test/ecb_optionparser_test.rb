@@ -47,26 +47,29 @@ class EcbOptionparserTest < MiniTest::Unit::TestCase
     available_dates = %w(2014-11-25 2014-11-24 2014-11-21)
     available_currencies = %w(SEK EUR GBP)
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
-    assert_raises(OptionParser::ParseError, 'no data for date') {
+    e = assert_raises(OptionParser::ParseError) {
       parser.parse(%w(-s EUR -t SEK -d 2014-11-23))
       parser.post_validate(available_dates, available_currencies)
     }
+    assert_equal('parse error: Given date 2014-11-23 has no data', e.to_s)
   end
 
   def test_invalid_currency
     available_dates = %w(2014-11-25 2014-11-24 2014-11-21)
     available_currencies = %w(SEK EUR GBP)
     parser = ECB_OptionParser.new('FiLeNaMe.rb')
-    assert_raises(OptionParser::ParseError, 'currency does not exist') {
+    e = assert_raises(OptionParser::ParseError) {
       parser.parse(%w(-s EUR -t XXX -d 2014-11-24))
       parser.post_validate(available_dates, available_currencies)
     }
+    assert_equal('parse error: XXX is not a valid currency in --target_currency', e.to_s)
   end
 
 
   def test_missing_option
      parser = ECB_OptionParser.new('FiLeNaMe.rb')
-     assert_raises(OptionParser::ParseError, '-s missing')  { parser.parse(%w(-t SEK)) }
+     e = assert_raises(OptionParser::ParseError)  { parser.parse(%w(-t SEK)) }
+     assert_equal('parse error: --src_currency is required', e.to_s)
   end
 
 end

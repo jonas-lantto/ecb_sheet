@@ -1,20 +1,7 @@
 require 'minitest/autorun'
 require 'ecb_sheet/currency_rates'
 
-class Currency_rateTest < MiniTest::Unit::TestCase
-
-  # Called before every test method runs. Can be used
-  # to set up fixture information.
-  def setup
-    # Do nothing
-  end
-
-  # Called after every test method runs. Can be used to tear
-  # down fixture information.
-
-  def teardown
-    # Do nothing
-  end
+class Currency_rateTest < Minitest::Test
 
   def test_load
     cr = Currency_rates.new(:period_none)

@@ -1,19 +1,7 @@
 require 'minitest/autorun'
 require 'ecb_sheet/ecb_option_parser'
 
-class EcbOptionparserTest < MiniTest::Unit::TestCase
-
-  # Called before every test method runs. Can be used
-  # to set up fixture information.
-  def setup
-  end
-
-  # Called after every test method runs. Can be used to tear
-  # down fixture information.
-
-  def teardown
-    # Do nothing
-  end
+class EcbOptionparserTest < Minitest::Test
 
   def test_valid
     available_dates = %w(2014-11-25 2014-11-24 2014-11-21)

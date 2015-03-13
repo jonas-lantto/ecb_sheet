@@ -42,7 +42,7 @@ end
 def create_workbook(currency_date, currency_rates, src_currency, target_currency)
   workbook = WriteXLSX.new("fxrates #{src_currency}#{target_currency} #{currency_date}.xlsx")
 
-  data = currency_rates.table_data_currency2rate(currency_rates.get_available_dates.max, target_currency)
+  data = currency_rates.table_data_currency2rate(currency_date, target_currency)
   create_sheet_currency_rate(workbook, target_currency, currency_date, data)
 
   data = currency_rates.table_data_date2rate(src_currency, target_currency)

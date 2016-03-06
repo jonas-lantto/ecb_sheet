@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-
+require 'table_transform'
 require_relative '../lib/ecb_sheet'
 
 begin
@@ -14,7 +14,11 @@ begin
   src_currency    = option_parser.options['src_currency']
   target_currency = option_parser.options['target_currency']
 
-  create_workbook(currency_date, currency_rates, src_currency, target_currency)
+  xls = TableTransform::ExcelCreator.new("fxrates #{src_currency}#{target_currency} #{currency_date}.xlsx")
+  xls.add_tab("FxRates(ECB) #{target_currency} #{currency_date}", currency_rates.table_data_currency2rate2(currency_date, target_currency))
+  xls.add_tab("FxRates(ECB) #{src_currency}#{target_currency}",  currency_rates.table_data_date2rate2(src_currency, target_currency))
+  xls.create!
+
 rescue
   puts $!.to_s
   puts option_parser.option_parser

@@ -11,6 +11,7 @@ GEM
       multi_json (~> 1.0)
       simplecov-html (~> 0.8.0)
     simplecov-html (0.8.0)
+    table_transform (0.4.0)
     write_xlsx (0.81.0)
       rubyzip (>= 1.0.0)
       zip-zip
@@ -24,4 +25,8 @@ DEPENDENCIES
   minitest (~> 5.4)
   rake
   simplecov
+  table_transform (~> 0.4)
   write_xlsx (~> 0.77)
+
+BUNDLED WITH
+   1.11.2

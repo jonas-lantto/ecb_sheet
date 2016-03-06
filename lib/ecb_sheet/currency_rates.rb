@@ -1,5 +1,6 @@
 require 'rexml/document'
 require 'open-uri'
+require 'table_transform'
 
 class Currency_rates
 
@@ -29,26 +30,32 @@ class Currency_rates
     end
   end
 
-  def table_data_currency2rate(date, target_currency)
-    data = []
-    base_rate = @currency_rates[date][target_currency]
-    raise "Currency #{target_currency} not available on date #{date}" if base_rate.nil?
+  def table_data_currency2rate2(date, base_currency)
+    col_name = date
+    t = TableTransform::Table.create_empty(['Currency', col_name])
+    t.set_metadata(col_name, {format: "0.0000 \"#{base_currency}\""})
+
+    base_rate = @currency_rates[date][base_currency]
+    raise "Currency #{base_currency} not available on date #{date}" if base_rate.nil?
     @currency_rates[date].each { |currency, rate|
       converted_rate = base_rate / rate
-      data << [currency, converted_rate]
+      t << {'Currency' => currency, col_name => converted_rate}
     }
-    data
+    t
   end
 
-  def table_data_date2rate(src_currency, target_currency)
-    data = []
+  def table_data_date2rate2(src_currency, target_currency)
+    col_rate = "Rate #{src_currency}#{target_currency}"
+    t = TableTransform::Table.create_empty(['Date', col_rate])
+    t.set_metadata(col_rate, {format: "0.0000 \"#{target_currency}\""})
+
     @currency_rates.each { |date, rates|
       converted_rate = rates[target_currency].nil? || rates[src_currency].nil? ? 'N/A' : rates[target_currency] / rates[src_currency]
-
-      data << [date, converted_rate]
+      t << {'Date' => date, col_rate => converted_rate}
     }
-    data
+    t
   end
+
 
   def get_available_currencies
     res = Array.new

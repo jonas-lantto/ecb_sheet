@@ -32,7 +32,7 @@ class Currency_rates
 
   def table_data_currency2rate2(date, base_currency)
     col_name = date
-    t = TableTransform::Table.create_empty(['Currency', col_name])
+    t = TableTransform::Table.create_empty(['Currency', col_name], {name: 'FxRates'})
     t.set_metadata(col_name, {format: "0.0000 \"#{base_currency}\""})
 
     base_rate = @currency_rates[date][base_currency]
@@ -46,7 +46,7 @@ class Currency_rates
 
   def table_data_date2rate2(src_currency, target_currency)
     col_rate = "Rate #{src_currency}#{target_currency}"
-    t = TableTransform::Table.create_empty(['Date', col_rate])
+    t = TableTransform::Table.create_empty(['Date', col_rate], {name: 'FxRates_Date'})
     t.set_metadata(col_rate, {format: "0.0000 \"#{target_currency}\""})
 
     @currency_rates.each { |date, rates|

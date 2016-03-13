@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'write_xlsx', '~>0.77'
-gem 'table_transform', '~>0.4'
+gem 'table_transform', '~>0.5'
 
 group :development do
   gem 'rake'

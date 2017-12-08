@@ -1,0 +1,38 @@
+service: ecb-sheet
+
+plugins:
+  - serverless-apigw-binary
+  - serverless-apigwy-binary
+
+custom:
+  apigwBinary:
+    types:
+      - 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      - '*/*'
+
+package:
+  exclude:
+    - packaging/**
+    - bin/**
+    - test/**
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  memorySize: 1024 # optional, in MB, default is 1024
+  versionFunctions: false # optional, default is true
+  stage: dev
+  region: eu-central-1
+
+functions:
+  crosscurrency:
+    handler: handler.crosscurrency
+    events:
+      - http:
+          path: crosscurrency/{currency}
+          method: get
+          contentHandling: CONVERT_TO_BINARY
+          request:
+            parameters:
+              paths:
+                currency: true

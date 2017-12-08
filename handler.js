@@ -28,4 +28,4 @@ module.exports.crosscurrency = function(event, context, callback) {
         callback(error);
     }
   });
-}
+};

@@ -12,6 +12,11 @@ Rake::TestTask.new('test') { |t|
   t.warning = true
 }
 
+desc 'Test, bundle and deploy'
+task :deploy => [:test, :bundle_install] do
+  sh 'serverless deploy'
+end
+
 
 PACKAGE_NAME = "ecb_sheet"
 VERSION = "1.0.0"

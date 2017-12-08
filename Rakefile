@@ -22,8 +22,6 @@ PACKAGE_NAME = "ecb_sheet"
 VERSION = "1.0.0"
 TRAVELING_RUBY_VERSION = "20150715-2.2.2"
 
-task :default => [:package]
-
 desc "Package your app for Linux x86_64"
 task :package => [:bundle_install, "packaging/traveling-ruby-#{TRAVELING_RUBY_VERSION}-linux-x86_64.tar.gz"] do
   create_package

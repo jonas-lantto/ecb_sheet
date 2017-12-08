@@ -2,18 +2,18 @@ GEM
   remote: https://rubygems.org/
   specs:
     docile (1.1.5)
-    json (1.8.3)
-    minitest (5.9.0)
-    rake (11.2.2)
-    rubyzip (1.2.0)
-    simplecov (0.11.2)
+    json (2.1.0)
+    minitest (5.10.3)
+    rake (12.3.0)
+    rubyzip (1.2.1)
+    simplecov (0.15.1)
       docile (~> 1.1.0)
-      json (~> 1.8)
+      json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
-    simplecov-html (0.10.0)
+    simplecov-html (0.10.2)
     table_transform (0.6.2)
       write_xlsx (~> 0.83)
-    write_xlsx (0.83.0)
+    write_xlsx (0.85.2)
       rubyzip (>= 1.0.0)
       zip-zip
     zip-zip (0.3)
@@ -29,4 +29,4 @@ DEPENDENCIES
   table_transform (~> 0.6)
 
 BUNDLED WITH
-   1.11.2
+   1.16.0

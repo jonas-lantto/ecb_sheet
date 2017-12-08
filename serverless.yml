@@ -1,4 +1,4 @@
-service: serverless-ruby
+service: ecb-sheet
 
 plugins:
   - serverless-apigw-binary
@@ -13,6 +13,8 @@ custom:
 package:
   exclude:
     - packaging/**
+    - bin/**
+    - test/**
 
 provider:
   name: aws

@@ -1,0 +1,32 @@
+service: serverless-ruby
+
+plugins:
+  - serverless-apigw-binary
+  - serverless-apigwy-binary
+
+custom:
+  apigwBinary:
+    types:
+      - 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      - '*/*'
+
+package:
+  exclude:
+    - packaging/**
+
+provider:
+  name: aws
+  runtime: nodejs4.3
+  memorySize: 1024 # optional, in MB, default is 1024
+  versionFunctions: false # optional, default is true
+  stage: dev
+  region: eu-central-1
+
+functions:
+  crosscurrency:
+    handler: handler.crosscurrency
+    events:
+      - http:
+          path: crosscurrency
+          method: get
+          contentHandling: CONVERT_TO_BINARY

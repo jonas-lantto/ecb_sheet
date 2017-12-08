@@ -6,3 +6,11 @@
 
 # SimpleCov coverage files
 coverage
+
+# node
+node_modules
+
+# serverless related
+.serverless
+packaging
+ruby

@@ -1,0 +1,50 @@
+<html>
+<header>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+</header>
+<body>
+    <h1>Cross Currency Generator</h1>
+    <p>Will generate an Excel sheet with cross currency rates using latest ECB rates as souce</p>
+    <form class="form-inline">
+        <label class="mr-sm-2" for="inlineFormCustomSelect"></label>
+        <select class="custom-select mb-2 mr-sm-2 mb-sm-0" placeholder="Select currency" id="inlineFormCustomSelect" name="currency">
+            <option value="" selected>Select currency...</option>
+            <option value="SEK">[SEK] Sweden Krona</option>
+            <option value="EUR">[EUR] Euro Member Countries</option>
+            <option value="GBP">[GBP] United Kingdom Pound</option>
+            <option value="USD">[USD] United States Dollar</option>
+            <option disabled>---</option>
+            <option value="AUD">[AUD] Australia Dollar</option>
+            <option value="BGN">[BGN] Bulgaria Lev</option>
+            <option value="BRL">[BRL] Brazil Real</option>
+            <option value="CAD">[CAD] Canada Dollar</option>
+            <option value="CHF">[CHF] Switzerland Franc</option>
+            <option value="CNY">[CNY] China Yuan Renminbi</option>
+            <option value="CZK">[CZK] Czech Republic Koruna</option>
+            <option value="DKK">[DKK] Denmark Krone</option>
+            <option value="HKD">[HKD] Hong Kong Dollar</option>
+            <option value="HRK">[HRK] Croatia Kuna</option>
+            <option value="HUF">[HUF] Hungary Forint</option>
+            <option value="IDR">[IDR] Indonesia Rupiah</option>
+            <option value="ILS">[ILS] Israel Shekel</option>
+            <option value="INR">[INR] India Rupee</option>
+            <option value="JPY">[JPY] Japan Yen</option>
+            <option value="KRW">[KRW] Korea (South) Won</option>
+            <option value="MXN">[MXN] Mexico Peso</option>
+            <option value="MYR">[MYR] Malaysia Ringgit</option>
+            <option value="NOK">[NOK] Norway Krone</option>
+            <option value="NZD">[NZD] New Zealand Dollar</option>
+            <option value="PHP">[PHP] Philippines Peso</option>
+            <option value="PLN">[PLN] Poland Zloty</option>
+            <option value="RON">[RON] Romania Leu</option>
+            <option value="RUB">[RUB] Russia Ruble</option>
+            <option value="SGD">[SGD] Singapore Dollar</option>
+            <option value="THB">[THB] Thailand Baht</option>
+            <option value="TRY">[TRY] Turkey Lira</option>
+            <option value="ZAR">[ZAR] South Africa Rand</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Generate</button>
+    </form>
+</body>
+</html>

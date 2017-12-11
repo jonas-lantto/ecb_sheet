@@ -34,7 +34,7 @@ end
 
 # @returns currency if exists otherwise null
 def get_currency(event)
-  query = event['pathParameters']
+  query = event['queryStringParameters']
   query && query['currency']
 end
 

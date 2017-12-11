@@ -29,10 +29,6 @@ functions:
     handler: handler.crosscurrency
     events:
       - http:
-          path: crosscurrency/{currency}
+          path: crosscurrency
           method: get
           contentHandling: CONVERT_TO_BINARY
-          request:
-            parameters:
-              paths:
-                currency: true

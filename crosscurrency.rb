@@ -3,22 +3,11 @@ require 'json'
 require 'base64'
 require_relative 'lib/ecb_sheet'
 
-def generate_sheet(filename, currency)
-  currency_rates  = Currency_rates.new(:period_latest)
-  date = currency_rates.get_available_dates.max
-
-  unless currency_rates.get_available_currencies.include?(currency)
-    raise "Given currency [#{currency}] does not exist"
-  end
-
-  cross_currency_sheet(currency, date, currency_rates, filename)
-end
-
-def generate_response(local_filename, download_display_name)
+def generate_response(local_filename, external_filename)
   JSON.generate(
       statusCode: 200,
       headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'Content-Disposition': 'attachment; filename="' + download_display_name + '"'},
+                'Content-Disposition': 'attachment; filename="' + external_filename + '"'},
       body: Base64.strict_encode64( File.binread(local_filename) ),
       isBase64Encoded: true
   )
@@ -33,19 +22,35 @@ def generate_error_response(status_code, body)
 end
 
 
-# @returns currency if exists otherwise null
-def get_currency(event)
+def get_currency_rates
+  Currency_rates.new(:period_latest)
+end
+
+# @returns currency if exists otherwise throw
+def get_currency(available_currencies, event)
   query = event['queryStringParameters']
-  query && query['currency']
+  currency = query && query['currency']
+
+  raise 'Currency input required' if currency.nil?
+  raise "Given currency [#{currency}] does not exist" unless available_currencies.include?(currency)
+
+  currency
+end
+
+
+def get_date(available_dates)
+  available_dates.max
 end
 
 begin
   event = ARGV.size > 0 ? JSON.parse(ARGV[0]) : {}
-  currency = get_currency(event)
+  currency_rates  = get_currency_rates
+  currency = get_currency(currency_rates.get_available_currencies, event)
+  date = get_date(currency_rates.get_available_dates)
 
   filename = '/tmp/fxrates.xlsx'
-  generate_sheet(filename, currency)
-  puts generate_response(filename, "fxRate #{currency}.xlsx")
+  cross_currency_sheet(currency, date, currency_rates, filename)
+  puts generate_response(filename, "fxRate #{currency} #{date}.xlsx")
 rescue
   puts generate_error_response(404, $!.to_s)
 end

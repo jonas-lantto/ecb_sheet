@@ -14,11 +14,12 @@ def generate_sheet(filename, currency)
   cross_currency_sheet(currency, date, currency_rates, filename)
 end
 
-def generate_response(filename)
+def generate_response(local_filename, download_display_name)
   JSON.generate(
       statusCode: 200,
-      headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},
-      body: Base64.strict_encode64( File.binread(filename) ),
+      headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'Content-Disposition': 'attachment; filename="' + download_display_name + '"'},
+      body: Base64.strict_encode64( File.binread(local_filename) ),
       isBase64Encoded: true
   )
 end
@@ -44,7 +45,7 @@ begin
 
   filename = '/tmp/fxrates.xlsx'
   generate_sheet(filename, currency)
-  puts generate_response(filename)
+  puts generate_response(filename, "fxRate #{currency}.xlsx")
 rescue
   puts generate_error_response(404, $!.to_s)
 end

@@ -12,5 +12,5 @@ node_modules
 
 # serverless related
 .serverless
-packaging
-ruby
+.bundle
+vendor

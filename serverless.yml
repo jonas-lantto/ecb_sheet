@@ -8,27 +8,31 @@ custom:
   apigwBinary:
     types:
       - 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      - '*/*'
 
 package:
   exclude:
     - packaging/**
     - bin/**
     - test/**
+    - node_modules
 
 provider:
   name: aws
-  runtime: nodejs4.3
+  runtime: ruby2.5
   memorySize: 1024 # optional, in MB, default is 1024
   versionFunctions: false # optional, default is true
   stage: dev
-  region: eu-central-1
+  region: eu-north-1
 
 functions:
   crosscurrency:
-    handler: handler.crosscurrency
+    handler: crosscurrency.lambda_handler
     events:
       - http:
           path: crosscurrency
           method: get
           contentHandling: CONVERT_TO_BINARY
+          request:
+            parameters:
+              querystrings:
+                currency: true

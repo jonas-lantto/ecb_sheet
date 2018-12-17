@@ -4,21 +4,21 @@ require 'base64'
 require_relative 'lib/ecb_sheet'
 
 def generate_response(local_filename, external_filename)
-  JSON.generate(
-      statusCode: 200,
-      headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    {
+        statusCode: 200,
+        headers: {'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition': 'attachment; filename="' + external_filename + '"'},
-      body: Base64.strict_encode64( File.binread(local_filename) ),
-      isBase64Encoded: true
-  )
+        body: Base64.strict_encode64( File.binread(local_filename) ),
+        isBase64Encoded: true
+    }
 end
 
 def generate_error_response(status_code, body)
-  JSON.generate(
+  {
       statusCode: status_code,
       headers: {'Content-Type': 'application/json'},
-      body: body.to_json,
-  )
+      body: body,
+  }
 end
 
 
@@ -42,15 +42,16 @@ def get_date(available_dates)
   available_dates.max
 end
 
-begin
-  event = ARGV.size > 0 ? JSON.parse(ARGV[0]) : {}
-  currency_rates  = get_currency_rates
-  currency = get_currency(currency_rates.get_available_currencies, event)
-  date = get_date(currency_rates.get_available_dates)
+def lambda_handler( event:, context: )
+    begin
+      currency_rates  = get_currency_rates
+      currency = get_currency(currency_rates.get_available_currencies, event)
+      date = get_date(currency_rates.get_available_dates)
 
-  filename = '/tmp/fxrates.xlsx'
-  cross_currency_sheet(currency, date, currency_rates, filename)
-  puts generate_response(filename, "fxRate #{currency} #{date}.xlsx")
-rescue
-  puts generate_error_response(404, $!.to_s)
+      filename = '/tmp/fxrates.xlsx'
+      cross_currency_sheet(currency, date, currency_rates, filename)
+      return generate_response(filename, "fxRate #{currency} #{date}.xlsx")
+    rescue
+      return generate_error_response(404, $!.to_s)
+    end
 end

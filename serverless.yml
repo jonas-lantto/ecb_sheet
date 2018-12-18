@@ -11,10 +11,12 @@ custom:
 
 package:
   exclude:
-    - packaging/**
-    - bin/**
-    - test/**
-    - node_modules
+    - "*/*"
+
+  include:
+    - crosscurrency.rb
+    - lib/**
+    - vendor/**
 
 provider:
   name: aws

@@ -5,9 +5,6 @@
   "author": "Jonas Lantto",
   "repository": "https://github.com/jonas-lantto/ecb_sheet.git",
   "license": "MIT",
-  "scripts": {
-    "deploy" : " ./node_modules/serverless/bin/serverless deploy -v"
-  },
   "devDependencies": {
     "serverless": "^1.35.0",
     "serverless-apigw-binary": "^0.4.4",
